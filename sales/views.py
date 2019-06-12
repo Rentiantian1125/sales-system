@@ -39,8 +39,8 @@ def sign_in(request):
 @auth
 def add_user(request, user_info):
     # 新增用户
-    name = request.post.get('username')
-    pwd = request.post.get('password')
+    name = request.POST.get('username')
+    pwd = request.POST.get('password')
     if name and pwd:
 
         user_obj = models.User.objects.create(username=name, password=pwd)
@@ -53,7 +53,7 @@ def add_user(request, user_info):
 @auth
 def get_user_list(request, user_info):
     # 获取用户列表
-    name = request.post.get('username')
+    name = request.POST.get('username')
 
     user_list = models.User.objects.filter(username=name) if name else models.User.objects.all()
 
@@ -64,7 +64,7 @@ def get_user_list(request, user_info):
 @auth
 def get_purchase_list(request, user_info):
     # 获取采购列表
-    goods_id = request.post.get('goods_id')
+    goods_id = request.POST.get('goods_id')
     if goods_id:
         purchase_list = models.PurchaseOrder.objects.filter(goods_id=goods_id)
     else:
@@ -78,12 +78,12 @@ def get_purchase_list(request, user_info):
 @auth
 def add_purchase(request, user_info):
     # 新增采购订单
-    user = request.post.get('user')
+    user = request.POST.get('user')
     purchase = models.PurchaseOrder.objects.create(user=user)
     order = purchase.order
-    goods_id = request.post.get('goods_id')
-    price = request.post.get('price')
-    num = request.post.get('num')
+    goods_id = request.POST.get('goods_id')
+    price = request.POST.get('price')
+    num = request.POST.get('num')
     if order and goods_id and price and num:
         purchase_obj = models.Purchase.objects.create(id=id, order_id=order.id, goods_id=goods_id, price=price,
                                                       num=num)
@@ -98,10 +98,10 @@ def add_purchase(request, user_info):
 @auth
 def update_purchase(request, user_info):
     # 编辑采购单
-    order = request.post.get('order')
-    goods_id = request.post.get('goods_id')
-    price = request.post.get('price')
-    num = request.post.get('num')
+    order = request.POST.get('order')
+    goods_id = request.POST.get('goods_id')
+    price = request.POST.get('price')
+    num = request.POST.get('num')
     if order and goods_id and price and num:
         user_obj = models.Purchase.objects.filter(id=id).update(id=id, order=order, goods_id=goods_id, price=price,
                                                                 num=num)
@@ -116,7 +116,7 @@ def update_purchase(request, user_info):
 @auth
 def get_sell_list(request, user_info):
     # 获取销售列表
-    goods_id = request.post.get('goods_id')
+    goods_id = request.POST.get('goods_id')
     if goods_id:
         sell_list = models.SellOrder.objects.filter(goods_id=goods_id)
     else:
@@ -130,12 +130,12 @@ def get_sell_list(request, user_info):
 @auth
 def add_sell(request, user_info):
     # 新增销售订单
-    user = request.post.get('user')
+    user = request.POST.get('user')
     sell = models.SellOrder.objects.create(user=user)
     order = sell.order
-    goods_id = request.post.get('goods_id')
-    price = request.post.get('price')
-    num = request.post.get('num')
+    goods_id = request.POST.get('goods_id')
+    price = request.POST.get('price')
+    num = request.POST.get('num')
     if order and goods_id and price and num:
         user_obj = models.Sell.objects.create(id=id, order_id=order, goods_id=goods_id, price=price,
                                               num=num)
@@ -150,10 +150,10 @@ def add_sell(request, user_info):
 @auth
 def update_sell(request, user_info):
     # 编辑销售单
-    order = request.post.get('order')
-    goods_id = request.post.get('goods_id')
-    price = request.post.get('price')
-    num = request.post.get('num')
+    order = request.POST.get('order')
+    goods_id = request.POST.get('goods_id')
+    price = request.POST.get('price')
+    num = request.POST.get('num')
     if order and goods_id and price and num:
         user_obj = models.Sell.objects.filter(id=id).update(id=id, order=order, goods_id=goods_id, price=price,
                                                             num=num)
@@ -168,7 +168,7 @@ def update_sell(request, user_info):
 @auth
 def get_reserve(request, user_info):
     # 获取库存信息
-    goods = request.post.get('goods')
+    goods = request.POST.get('goods')
     if goods:
         models.User.objects.filter(goods=goods)
     else:
@@ -189,16 +189,14 @@ def get_goods_list(request, user_info):
 
 
 @auth
-def add_or_update_goods(request, user_info):
-    # 新增或更新商品
-    good_id = request.post.get('id')
-    name = request.post.get('name')
-    price = request.post.get('price')
-    num = request.post.get('num')
-    if good_id and price and num:
+def add_goods(request, user_info):
+    # 新增商品
+    name = request.POST.get('name')
+    price = request.POST.get('price')
+    if name and price:
         # user_obj = models.Goods.objects.create_or_update(name=name, good=good_id, price=price,
-        user_obj = models.Goods.objects.create(name=name, good=good_id, price=price,
-                                               num=num)
+        user_obj = models.Goods.objects.create(name=name, price=price)
+
         if user_obj:
             return JsonResponse({'code': '0', 'msg': '添加成功'})
         else:
@@ -210,8 +208,8 @@ def add_or_update_goods(request, user_info):
 @auth
 def change_goods_price(request, user_info):
     # 调价
-    goods_id = request.post.get('id')
-    price = request.post.get('price')
+    goods_id = request.POST.get('id')
+    price = request.POST.get('price')
     if price:
         user_obj = models.Sell.objects.filter(id=goods_id).update(price=price)
         if user_obj:
@@ -225,7 +223,7 @@ def change_goods_price(request, user_info):
 @auth
 def put_in_reserve(request, user_info):
     # 入库
-    purchase_id = request.post.get('id')
+    purchase_id = request.POST.get('id')
     goods_info = models.Purchase.objects.get(id=purchase_id)
     goods = goods_info.goods_id
     num = goods_info.num
@@ -237,7 +235,7 @@ def put_in_reserve(request, user_info):
 @auth
 def out_reserve(request, user_info):
     # 出库
-    sell_id = request.post.get('id')
+    sell_id = request.POST.get('id')
     goods_info = models.Sell.objects.get(id=sell_id)
     goods = goods_info.goods_id
     num = goods_info.num
