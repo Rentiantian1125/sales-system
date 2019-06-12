@@ -179,20 +179,26 @@ def get_reserve(request, user_info):
 def get_goods_list(request, user_info):
     # 获取商品列表
     goods_list = models.Goods.objects.all()
-    if len(goods_list) > 0:
-        return JsonResponse({'code': '0', 'msg': '加载成功', 'data': list(goods_list)})
-    else:
-        return JsonResponse({'code': '1', 'msg': '无数据'})
+
+    return JsonResponse({'code': '0', 'msg': '加载成功', 'data': list(goods_list)})
+
+    # if len(goods_list) > 0:
+    #     return JsonResponse({'code': '0', 'msg': '加载成功', 'data': list(goods_list)})
+    # else:
+    #     return JsonResponse({'code': '1', 'msg': ''})
 
 
 @auth
 def add_or_update_goods(request, user_info):
     # 新增或更新商品
     good_id = request.post.get('id')
+    name = request.post.get('name')
     price = request.post.get('price')
     num = request.post.get('num')
     if good_id and price and num:
-        user_obj = models.Goods.objects.create_or_update(good=good_id, price=price, num=num)
+        # user_obj = models.Goods.objects.create_or_update(name=name, good=good_id, price=price,
+        user_obj = models.Goods.objects.create(name=name, good=good_id, price=price,
+                                               num=num)
         if user_obj:
             return JsonResponse({'code': '0', 'msg': '添加成功'})
         else:
