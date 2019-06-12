@@ -19,7 +19,6 @@ class Goods(models.Model):
     name = models.CharField(max_length=30, null=False, default='')
     # id = models.IntegerField(primary_key=True)
     price = models.IntegerField()
-    num = models.IntegerField()
     create_at = models.DateTimeField()
 
     class Meta:
