@@ -25,7 +25,8 @@ def sign_in(request):
         user_obj = models.User.objects.filter(username=name, password=pwd).first()
 
         if user_obj:
-            return JsonResponse({'code': '0', 'msg': '登录成功'})
+            return JsonResponse({'code': '0', 'msg': '登录成功',
+                                 'token': TokenService.create_token({'id': user_obj.id, 'name': user_obj.username})})
         else:
             return JsonResponse({'code': '1', 'msg': '用户名或密码错误'})
     else:
