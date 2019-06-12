@@ -182,6 +182,22 @@ def get_goods_list(request):
 
 
 @auth
+def add_or_update_goods(request):
+    # 新增或更新商品
+    good_id = request.post.get('id')
+    price = request.post.get('price')
+    num = request.post.get('num')
+    if good_id and price and num:
+        user_obj = models.Goods.objects.create_or_update(good=good_id, price=price, num=num)
+        if user_obj:
+            return JsonResponse({'code': '0', 'msg': '添加成功'})
+        else:
+            return JsonResponse({'code': '1', 'msg': '添加失败'})
+    else:
+        return JsonResponse({'code': '1', 'msg': '不可为空'})
+
+
+@auth
 def change_goods_price(request):
     # 调价
     goods_id = request.post.get('id')
