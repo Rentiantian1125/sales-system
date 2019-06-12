@@ -6,12 +6,15 @@ from sales_system.token_service import TokenService
 
 def auth(func):
     def view(request):
-        token = TokenService.get_token(request)
-        if token:
-            user_info = TokenService.check_token(token)
-        else:
-            return JsonResponse({'code': '1', 'error_msg': '需要登录'})
+        user_info = {'id': 1, 'name': 'rentiantian'}
         return func(request, user_info)
+
+        # token = TokenService.get_token(request)
+        # if token:
+        #     user_info = TokenService.check_token(token)
+        # else:
+        #     return JsonResponse({'code': '1', 'error_msg': '需要登录'})
+        # return func(request, user_info)
 
     return view
 
@@ -34,7 +37,7 @@ def sign_in(request):
 
 
 @auth
-def add_user(request):
+def add_user(request, user_info):
     # 新增用户
     name = request.post.get('username')
     pwd = request.post.get('password')
@@ -48,7 +51,7 @@ def add_user(request):
 
 
 @auth
-def get_user_list(request):
+def get_user_list(request, user_info):
     # 获取用户列表
     name = request.post.get('username')
 
@@ -59,7 +62,7 @@ def get_user_list(request):
 
 
 @auth
-def get_purchase_list(request):
+def get_purchase_list(request, user_info):
     # 获取采购列表
     goods_id = request.post.get('goods_id')
     if goods_id:
@@ -73,7 +76,7 @@ def get_purchase_list(request):
 
 
 @auth
-def add_purchase(request):
+def add_purchase(request, user_info):
     # 新增采购订单
     user = request.post.get('user')
     purchase = models.PurchaseOrder.objects.create(user=user)
@@ -93,7 +96,7 @@ def add_purchase(request):
 
 
 @auth
-def update_purchase(request):
+def update_purchase(request, user_info):
     # 编辑采购单
     order = request.post.get('order')
     goods_id = request.post.get('goods_id')
@@ -111,7 +114,7 @@ def update_purchase(request):
 
 
 @auth
-def get_sell_list(request):
+def get_sell_list(request, user_info):
     # 获取销售列表
     goods_id = request.post.get('goods_id')
     if goods_id:
@@ -125,7 +128,7 @@ def get_sell_list(request):
 
 
 @auth
-def add_sell(request):
+def add_sell(request, user_info):
     # 新增销售订单
     user = request.post.get('user')
     sell = models.SellOrder.objects.create(user=user)
@@ -145,7 +148,7 @@ def add_sell(request):
 
 
 @auth
-def update_sell(request):
+def update_sell(request, user_info):
     # 编辑销售单
     order = request.post.get('order')
     goods_id = request.post.get('goods_id')
@@ -163,7 +166,7 @@ def update_sell(request):
 
 
 @auth
-def get_reserve(request):
+def get_reserve(request, user_info):
     # 获取库存信息
     goods = request.post.get('goods')
     if goods:
@@ -173,7 +176,7 @@ def get_reserve(request):
 
 
 @auth
-def get_goods_list(request):
+def get_goods_list(request, user_info):
     # 获取商品列表
     goods_list = models.Goods.objects.all()
     if len(goods_list) > 0:
@@ -183,7 +186,7 @@ def get_goods_list(request):
 
 
 @auth
-def add_or_update_goods(request):
+def add_or_update_goods(request, user_info):
     # 新增或更新商品
     good_id = request.post.get('id')
     price = request.post.get('price')
@@ -199,7 +202,7 @@ def add_or_update_goods(request):
 
 
 @auth
-def change_goods_price(request):
+def change_goods_price(request, user_info):
     # 调价
     goods_id = request.post.get('id')
     price = request.post.get('price')
@@ -213,7 +216,8 @@ def change_goods_price(request):
         return JsonResponse({'code': '1', 'msg': '不可为空'})
 
 
-def put_in_reserve(request):
+@auth
+def put_in_reserve(request, user_info):
     # 入库
     purchase_id = request.post.get('id')
     goods_info = models.Purchase.objects.get(id=purchase_id)
@@ -224,7 +228,8 @@ def put_in_reserve(request):
         reserve.updata(num=int(num) + int(reserve.num))
 
 
-def out_reserve(request):
+@auth
+def out_reserve(request, user_info):
     # 出库
     sell_id = request.post.get('id')
     goods_info = models.Sell.objects.get(id=sell_id)
