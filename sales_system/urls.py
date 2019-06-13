@@ -33,5 +33,5 @@ urlpatterns = [
     path('change_goods_price/', views.change_goods_price),
     path('put_in_reserve/', views.put_in_reserve),
     path('out_reserve/', views.out_reserve),
-    path('add_goods/', views.add_goods),
+    path('add_update_goods/', views.add_update_goods),
 ]

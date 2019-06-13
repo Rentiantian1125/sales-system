@@ -178,7 +178,7 @@ def get_reserve(request, user_info):
 @auth
 def get_goods_list(request, user_info):
     # 获取商品列表
-    goods_list = models.Goods.objects.all()
+    goods_list = Goods.objects.values().filter()
 
     return JsonResponse({'code': '0', 'msg': '加载成功', 'data': list(goods_list)})
 
@@ -189,13 +189,34 @@ def get_goods_list(request, user_info):
 
 
 @auth
-def add_goods(request, user_info):
-    # 新增商品
+def add_update_goods(request, user_info):
+    # 新增或编辑商品
+    goods_id = request.POST.get('id', None)
     name = request.POST.get('name')
     price = request.POST.get('price')
     if name and price:
+        if goods_id:
+            user_obj = models.Goods.objects.filter(id=goods_id).update(name=name, price=price)
+        else:
+            user_obj = models.Goods.objects.create(name=name, price=price)
+
+        if user_obj:
+            return JsonResponse({'code': '0', 'msg': '添加成功'})
+        else:
+            return JsonResponse({'code': '1', 'msg': '添加失败'})
+    else:
+        return JsonResponse({'code': '1', 'msg': '不可为空'})
+
+
+@auth
+def update_goods(request, user_info):
+    # 编辑商品
+    goods_id = request.POST.get('id')
+    name = request.POST.get('name')
+    price = request.POST.get('price')
+    if id and name and price:
         # user_obj = models.Goods.objects.create_or_update(name=name, good=good_id, price=price,
-        user_obj = models.Goods.objects.create(name=name, price=price)
+        user_obj = models.Goods.objects.filter(id=goods_id).update(name=name, price=price)
 
         if user_obj:
             return JsonResponse({'code': '0', 'msg': '添加成功'})
